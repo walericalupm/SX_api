@@ -11,12 +11,12 @@ class BaseModel(Model):
 
 class Product(BaseModel):
     code = CharField(max_length=10, null=True)
-    barcode = CharField(max_length=50)
+    barcode = CharField(max_length=50, unique=True)
     name = CharField(max_length=50)
     category = CharField(max_length=50, null=True)
     supermarket = CharField(max_length=70)
-    price = FloatField(null=True)
-    quantity = IntegerField(default=0)
+    price = FloatField(null=True, default=0.0)
+    quantity = IntegerField(null=True, default=1)
 
 
 class Purchase(BaseModel):
