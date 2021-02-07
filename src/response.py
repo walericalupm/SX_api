@@ -1,6 +1,6 @@
-from flask import json
-from app import app
-from constants import *
+from flask import jsonify
+from src.app import app
+from src.constants import *
 
 
 def base_response_body(resource_id, resource_uri):
@@ -17,7 +17,7 @@ def resource_response_object(resource):
 
 def base_response_object(response_body, code):
     response = app.response_class(
-        response=json.dumps(response_body),
+        response=response_body,
         status=code,
         mimetype=JSON_MIME_TYPE
     )
@@ -34,7 +34,7 @@ def api_response(resource_id, resource_uri, code):
 
 
 def api_resource_response(resource):
-    return base_response_object(resource, OK)
+    return jsonify(resource)
 
 
 def api_error_response(code):

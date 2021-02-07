@@ -1,7 +1,7 @@
 import datetime
 
-from peewee import Model, CharField, AutoField, ForeignKeyField, IntegerField, FloatField, DateTimeField
-from app import db
+from peewee import Model, CharField, ForeignKeyField, IntegerField, FloatField, DateTimeField
+from src.app import db
 
 
 class BaseModel(Model):

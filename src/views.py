@@ -1,8 +1,8 @@
-from app import app
+from src.app import app
 from flask import request
-from constants import *
-from queries import create_product, update_product, get_product_by_barcode
-from response import api_response, api_error_response, api_resource_response
+from src.constants import *
+from src.queries import create_product, update_product, get_product_by_barcode
+from src.response import api_response, api_error_response, api_resource_response
 
 
 @app.route('/')

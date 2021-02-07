@@ -1,7 +1,9 @@
+from flask import json
 from peewee import IntegrityError, DoesNotExist
-from models import *
-from app import db
-from constants import *
+from playhouse.shortcuts import model_to_dict
+from src.models import *
+from src.app import db
+from src.constants import *
 
 
 def create_product(dto_product):
@@ -23,20 +25,20 @@ def create_product(dto_product):
 
 
 def update_product(barcode, dto_product):
-    product = get_product_by_barcode(barcode)
-    if 'quantity' in dto_product.keys():
+    code, product = get_product_by_barcode(barcode)
+    if code is OK and 'quantity' in dto_product.keys():
         product.quantity = product.quantity + int(dto_product['quantity'])
         product.save()
         return OK, product
     else:
         # TODO: Implement complete update
-        return SERVER_ERROR, None
+        return code, None
 
 
 def get_product_by_barcode(barcode):
     try:
         product = Product.select().where(Product.barcode == barcode).get()
-        return OK, product
+        return OK, model_to_dict(product)
     except DoesNotExist:
         return NOT_FOUND, None
     except:

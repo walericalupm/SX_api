@@ -1,5 +1,5 @@
-from models import *
-from views import *
+from src.models import *
+from src.views import *
 
 
 def create_tables():
@@ -9,6 +9,5 @@ def create_tables():
 
 if __name__ == '__main__':
     create_tables()
-    test()
     app.debug = True
     app.run(debug=True)
