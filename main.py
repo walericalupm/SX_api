@@ -9,5 +9,6 @@ def create_tables():
 
 if __name__ == '__main__':
     create_tables()
+    test()
     app.debug = True
     app.run(debug=True)

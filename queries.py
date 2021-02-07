@@ -1,5 +1,4 @@
-from flask import flash
-from peewee import IntegrityError
+from peewee import IntegrityError, DoesNotExist
 from models import *
 from app import db
 from constants import *
@@ -35,13 +34,10 @@ def update_product(barcode, dto_product):
 
 
 def get_product_by_barcode(barcode):
-    return (Product
-            .select()
-            .where(Product.barcode == barcode).get())
-
-#
-#
-# def get_art_paintings_by_code(code):
-#     return (Paint
-#             .select()
-#             .where(Paint.Code == code).get())
+    try:
+        product = Product.select().where(Product.barcode == barcode).get()
+        return OK, product
+    except DoesNotExist:
+        return NOT_FOUND, None
+    except:
+        return SERVER_ERROR, None

@@ -11,6 +11,10 @@ def base_response_body(resource_id, resource_uri):
     return response_body
 
 
+def resource_response_object(resource):
+    return
+
+
 def base_response_object(response_body, code):
     response = app.response_class(
         response=json.dumps(response_body),
@@ -22,11 +26,15 @@ def base_response_object(response_body, code):
 
 def api_response(resource_id, resource_uri, code):
     if resource_id is None:
-        response = base_response_object(None, 200)
+        response = base_response_object(None, OK)
     else:
         response_body = base_response_body(resource_id, resource_uri)
         response = base_response_object(response_body, code)
     return response
+
+
+def api_resource_response(resource):
+    return base_response_object(resource, OK)
 
 
 def api_error_response(code):
