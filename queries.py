@@ -1,8 +1,8 @@
 from flask import flash
 from peewee import IntegrityError
-
 from models import *
 from app import db
+from constants import *
 
 
 def create_product(dto_product):
@@ -15,9 +15,29 @@ def create_product(dto_product):
                 category=dto_product['category'],
                 supermarket=dto_product['supermarket']
             )
-            return True
+            return CREATED, product
     except IntegrityError:
-        flash('Barcode exists')
+        product = get_product_by_barcode(dto_product['barcode'])
+        return CONFLICT, product
+    except:
+        return SERVER_ERROR, None
+
+
+def update_product(barcode, dto_product):
+    product = get_product_by_barcode(barcode)
+    if 'quantity' in dto_product.keys():
+        product.quantity = product.quantity + int(dto_product['quantity'])
+        product.save()
+        return OK, product
+    else:
+        # TODO: Implement complete update
+        return SERVER_ERROR, None
+
+
+def get_product_by_barcode(barcode):
+    return (Product
+            .select()
+            .where(Product.barcode == barcode).get())
 
 #
 #
