@@ -1,7 +1,28 @@
-from peewee import MySQLDatabase
-from src.models import Product, Purchase, remote_db
+import unittest
+from src.models import remote_db, Product, Purchase
 
+
+class BaseTestCase(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        remote_db.init(DATABASE_NAME,
+                       user=DATABASE_USERNAME,
+                       password=DATABASE_PASSWORD,
+                       host=DATABASE_HOST,
+                       port=DATABASE_PORT
+                       )
+        drop_tables()
+        create_tables()
+        seed_database()
+
+    @classmethod
+    def tearDownClass(cls):
+        drop_tables()
+
+
+# region database_seeder_setup
 # Database for testing
+# TODO: Set in config file
 DATABASE_NAME = 'SQ4Y6h3Ze5'
 DATABASE_USERNAME = 'SQ4Y6h3Ze5'
 DATABASE_PASSWORD = '7wW8rMNehQ'
@@ -9,26 +30,17 @@ DATABASE_PORT = 3306
 DATABASE_HOST = 'remotemysql.com'
 
 
-remote_db.init(
-    DATABASE_NAME,
-    user=DATABASE_USERNAME,
-    password=DATABASE_PASSWORD,
-    host=DATABASE_HOST,
-    port=DATABASE_PORT
-)
-db = remote_db
-
-
 def create_tables():
-    with db:
-        db.create_tables([Product, Purchase])
+    with remote_db:
+        remote_db.create_tables([Product, Purchase])
 
 
 def drop_tables():
-    with db:
-        db.drop_tables([Product, Purchase])
+    with remote_db:
+        remote_db.drop_tables([Product, Purchase])
 
 
+# TODO: Implement with faker
 def seed_database():
     # region Product
     product_1_barcode, \
@@ -78,11 +90,4 @@ def seed_database():
     purchase.save()
     # endregion
 
-
-def setUpModule():
-    create_tables()
-    seed_database()
-
-
-def tearDownModule():
-    drop_tables()
+# endregion
