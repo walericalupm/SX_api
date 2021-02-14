@@ -1,14 +1,13 @@
-from flask import json
+
 from peewee import IntegrityError, DoesNotExist
 from playhouse.shortcuts import model_to_dict
 from src.models import *
-from src.app import db
 from src.constants import *
 
 
 def create_product(dto_product):
     try:
-        with db.atomic():
+        with remote_db.atomic():
             product = Product.create(
                 code=dto_product['code'],  # Generate Code
                 barcode=dto_product['barcode'],
