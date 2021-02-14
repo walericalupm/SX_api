@@ -1,12 +1,12 @@
 import datetime
+from peewee import Model, CharField, ForeignKeyField, IntegerField, FloatField, DateTimeField, MySQLDatabase
 
-from peewee import Model, CharField, ForeignKeyField, IntegerField, FloatField, DateTimeField
-from src.app import db
+remote_db = MySQLDatabase(None)
 
 
 class BaseModel(Model):
     class Meta:
-        database = db
+        database = remote_db
 
 
 class Product(BaseModel):

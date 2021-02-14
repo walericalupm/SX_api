@@ -1,4 +1,4 @@
-from peewee import MySQLDatabase
+from models import remote_db
 from flask import Flask
 
 DATABASE_NAME = 'fPFDbFxX0z'
@@ -7,7 +7,7 @@ DATABASE_PASSWORD = 'VCuV9ETNiF'
 DATABASE_PORT = 3306
 DATABASE_HOST = 'remotemysql.com'
 
-db = MySQLDatabase(
+remote_db.init(
     DATABASE_NAME,
     user=DATABASE_USERNAME,
     password=DATABASE_PASSWORD,
@@ -20,10 +20,10 @@ app = Flask(__name__)
 
 @app.before_request
 def before_request():
-    db.connect()
+    remote_db.connect()
 
 
 @app.after_request
 def after_request(response):
-    db.close()
+    remote_db.close()
     return response
