@@ -10,7 +10,7 @@ def hello_world():
     return 'Hello, World!'
 
 
-@app.route('/testing_suite', methods=[POST])
+@app.route('/tests', methods=[POST])
 def test():
     data = request.json
     return 'Hello ' + data['nombre']
