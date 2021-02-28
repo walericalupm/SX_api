@@ -1,4 +1,4 @@
-from src.app import app
+from app import app
 from flask import request
 from src.constants import *
 from src.queries import create_product, update_product, get_product_by_barcode

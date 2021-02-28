@@ -1,17 +1,17 @@
 from faker import Faker
 from peewee import IntegrityError, DoesNotExist
 from tests.base_test_setup import BaseTestCase, generate_random_product, products_generated
-from src.models import Product, remote_db
+import src.models as models
 
 
 class ITDBProduct(BaseTestCase):
 
     def test_create_product(self):
-        products_number = len(Product.select())
+        products_number = len(models.Product.select())
         product_to_create = generate_random_product()
         product_to_create.save()
-        new_products_number = len(Product.select())
-        product_created = Product.select().where(Product.barcode == product_to_create.barcode).get()
+        new_products_number = len(models.Product.select())
+        product_created = models.Product.select().where(models.Product.barcode == product_to_create.barcode).get()
 
         self.assertEqual(new_products_number, products_number + 1)
         self.assertEqual(product_created.code, product_to_create.code)
@@ -34,7 +34,7 @@ class ITDBProduct(BaseTestCase):
     def test_get_non_existent_product(self):
         fake = Faker()
         Faker.seed(0)
-        empty_product = Product.select().where(Product.barcode == fake.ean(length=8))
+        empty_product = models.Product.select().where(models.Product.barcode == fake.ean(length=8))
         self.assertRaises(DoesNotExist, empty_product.get)
 
     def test_update_product(self):
@@ -42,21 +42,21 @@ class ITDBProduct(BaseTestCase):
         new_category = 'CAT4'
         product_barcode = products_generated[0].barcode
 
-        product_to_update = Product.select().where(Product.barcode == product_barcode).get()
+        product_to_update = models.Product.select().where(models.Product.barcode == product_barcode).get()
         product_to_update.price = new_price
         product_to_update.category = new_category
         product_to_update.save()
 
-        product_updated = Product.select().where(Product.barcode == product_barcode).get()
+        product_updated = models.Product.select().where(models.Product.barcode == product_barcode).get()
         self.assertEqual(product_updated.price, new_price)
         self.assertEqual(product_updated.category, new_category)
 
     def test_delete_product(self):
         product = generate_random_product()
         product.save()
-        delete_query = Product.delete().where(Product.barcode == product.barcode)
+        delete_query = models.Product.delete().where(models.Product.barcode == product.barcode)
         delete_query.execute()
-        product_deleted = Product.select().where(Product.barcode == product.barcode)
+        product_deleted = models.Product.select().where(models.Product.barcode == product.barcode)
         self.assertRaises(DoesNotExist, product_deleted.get)
 
 

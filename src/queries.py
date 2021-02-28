@@ -1,14 +1,13 @@
-
 from peewee import IntegrityError, DoesNotExist
 from playhouse.shortcuts import model_to_dict
-from src.models import *
+import src.models as models
 from src.constants import *
 
 
 def create_product(dto_product):
     try:
-        with remote_db.atomic():
-            product = Product.create(
+        with models.remote_db.atomic():
+            product = models.Product.create(
                 code=dto_product['code'],  # Generate Code
                 barcode=dto_product['barcode'],
                 name=dto_product['name'],
@@ -36,7 +35,7 @@ def update_product(barcode, dto_product):
 
 def get_product_by_barcode(barcode):
     try:
-        product = Product.select().where(Product.barcode == barcode).get()
+        product = models.Product.select().where(models.Product.barcode == barcode).get()
         return OK, model_to_dict(product)
     except DoesNotExist:
         return NOT_FOUND, None

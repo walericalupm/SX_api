@@ -1,29 +1,33 @@
-from models import remote_db
 from flask import Flask
-
-DATABASE_NAME = 'fPFDbFxX0z'
-DATABASE_USERNAME = 'fPFDbFxX0z'
-DATABASE_PASSWORD = 'VCuV9ETNiF'
-DATABASE_PORT = 3306
-DATABASE_HOST = 'remotemysql.com'
-
-remote_db.init(
-    DATABASE_NAME,
-    user=DATABASE_USERNAME,
-    password=DATABASE_PASSWORD,
-    host=DATABASE_HOST,
-    port=DATABASE_PORT
-)
+import src.models as models
+from dotenv import dotenv_values
 
 app = Flask(__name__)
 
 
+def create_tables():
+    with models.remote_db as db:
+        db.create_tables([models.Product, models.Purchase])
+
+
+def load_database():
+    db_params = dotenv_values()
+    models.remote_db.init(
+        db_params.get('DATABASE_NAME'),
+        user=db_params.get('DATABASE_USERNAME'),
+        password=db_params.get('DATABASE_PASSWORD'),
+        host=db_params.get('DATABASE_HOST'),
+        port=int(db_params.get('DATABASE_PORT'))
+    )
+    create_tables()
+
+
 @app.before_request
 def before_request():
-    remote_db.connect()
+    models.remote_db.connect()
 
 
 @app.after_request
 def after_request(response):
-    remote_db.close()
+    models.remote_db.close()
     return response

@@ -1,14 +1,16 @@
 import unittest
 from faker import Faker
+from dotenv import dotenv_values
 from random import seed, randint
-from src.models import remote_db, Product, Purchase
+from src.constants import ENV_TEST_DIR
+import src.models as models
 
 
 class BaseTestCase(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        init_database()
+        load_database()
         drop_tables()
         create_tables()
         seed_database()
@@ -22,26 +24,25 @@ products_generated = []
 purchases_generated = []
 
 
-def init_database():
-    # region database_seeder_setup
-    # Database for testing
-    # TODO: Set in config file
-    remote_db.init('It3vTRTHBk',
-                   user='It3vTRTHBk',
-                   password='2tgt40lmx2',
-                   host='remotemysql.com',
-                   port=3306
-                   )
+def load_database():
+    db_params = dotenv_values(ENV_TEST_DIR)
+    models.remote_db.init(
+        db_params.get('DATABASE_NAME'),
+        user=db_params.get('DATABASE_USERNAME'),
+        password=db_params.get('DATABASE_PASSWORD'),
+        host=db_params.get('DATABASE_HOST'),
+        port=int(db_params.get('DATABASE_PORT'))
+    )
 
 
 def create_tables():
-    with remote_db:
-        remote_db.create_tables([Product, Purchase])
+    with models.remote_db as db:
+        db.create_tables([models.Product, models.Purchase])
 
 
 def drop_tables():
-    with remote_db:
-        remote_db.drop_tables([Product, Purchase])
+    with models.remote_db as db:
+        db.drop_tables([models.Product, models.Purchase])
 
 
 def seed_database(num_registers=5):
@@ -64,15 +65,15 @@ def seed_database(num_registers=5):
 def generate_random_product():
     fake = Faker()
     seed(0)
-    return Product(code=fake.bothify(text='TE_###_###'),
-                   barcode=fake.ean(length=8),
-                   name=fake.bothify(text='T_Product_##'),
-                   category=fake.bothify(text='TEST_#'),
-                   supermarket=fake.bothify(text='Supermarket_##'),
-                   price=fake.pyfloat(left_digits=2, right_digits=2, positive=True))
+    return models.Product(code=fake.bothify(text='TE_###_###'),
+                          barcode=fake.ean(length=8),
+                          name=fake.bothify(text='T_Product_##'),
+                          category=fake.bothify(text='TEST_#'),
+                          supermarket=fake.bothify(text='Supermarket_##'),
+                          price=fake.pyfloat(left_digits=2, right_digits=2, positive=True))
 
 
 def generate_random_purchase(product):
     seed(1)
-    return Purchase(product=product, quantity=randint(0, 10))
+    return models.Purchase(product=product, quantity=randint(0, 10))
 # endregion
