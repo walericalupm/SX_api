@@ -22,4 +22,5 @@ class Product(BaseModel):
 class Purchase(BaseModel):
     product = ForeignKeyField(Product, backref='purchase')
     quantity = IntegerField()
+    purchase_price = FloatField()
     date = DateTimeField(default=datetime.datetime.now)

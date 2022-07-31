@@ -45,7 +45,7 @@ def drop_tables():
         db.drop_tables([models.Product, models.Purchase])
 
 
-def seed_database(num_registers=5):
+def seed_database(num_registers=10):
     # region Product
     for _ in range(num_registers):
         product_to_save = generate_random_product()

@@ -30,3 +30,9 @@ POST = 'POST'
 PUT = 'PUT'
 DELETE = 'DELETE'
 
+# Messages
+NOT_FOUND_MESSAGE = 'Resource Not Found'
+SERVER_ERROR_MESSAGE = 'Server Error'
+
+# Various
+MESSAGE = 'message'

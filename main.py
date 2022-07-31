@@ -1,5 +1,5 @@
-from src.views import *
-from app import app, load_database
+from src.api import *
+from src.app import app, load_database
 
 
 if __name__ == '__main__':
