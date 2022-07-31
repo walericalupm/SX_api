@@ -24,6 +24,7 @@ def load_database():
 
 @app.before_request
 def before_request():
+    print("========> Hey!")
     models.remote_db.connect()
 
 
