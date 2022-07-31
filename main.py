@@ -1,4 +1,3 @@
-from src.api import *
 from src.app import app, load_database
 
 
