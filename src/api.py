@@ -1,5 +1,5 @@
 
-from response import api_response
+from src.response import api_response
 from src.app import app
 from flask import request
 from src.constants import *
