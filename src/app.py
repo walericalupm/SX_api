@@ -10,22 +10,15 @@ def create_tables():
         db.create_tables([models.Product, models.Purchase])
 
 
-def load_database():
-    db_params = dotenv_values()
-    models.remote_db.init(
-        db_params.get('DATABASE_NAME'),
-        user=db_params.get('DATABASE_USERNAME'),
-        password=db_params.get('DATABASE_PASSWORD'),
-        host=db_params.get('DATABASE_HOST'),
-        port=int(db_params.get('DATABASE_PORT'))
-    )
+def load_database(database):
+    models.remote_db.initialize(database)
     create_tables()
 
 
 @app.before_request
 def before_request():
-    print("========> Hey!")
-    models.remote_db.connect()
+    if models.remote_db.is_closed():
+        models.remote_db.connect()
 
 
 @app.after_request

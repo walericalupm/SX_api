@@ -9,13 +9,7 @@ from src.utils import api_resource_response, api_error_response
 
 @app.route('/')
 def hello_world():
-    return 'Hello, World!'
-
-
-@app.route('/tests', methods=[POST])
-def test():
-    data = request.json
-    return 'Hello ' + data['nombre']
+    return 'SX_api running!'
 
 
 @app.route(BASE_URI_V1 + URI_PRODUCTS, methods=[GET, POST])
@@ -27,7 +21,7 @@ def manage_product_api():
         code, product = create_product(dto_product)
     if code is OK:
         return api_resource_response(product, code)
-    if code is CREATED or CONFLICT:
+    if code is CREATED or code is CONFLICT:
         return api_response(product['barcode'], URI_PRODUCTS, code)
     else:
         return api_error_response(code)

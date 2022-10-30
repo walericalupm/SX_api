@@ -1,8 +1,7 @@
 import unittest
 from faker import Faker
-from dotenv import dotenv_values
 from random import seed, randint
-from src.constants import ENV_TEST_DIR
+from src.configuration import TestingConfig
 import src.models as models
 
 
@@ -11,38 +10,41 @@ class BaseTestCase(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         load_database()
-        drop_tables()
-        create_tables()
-        seed_database()
+        recreate_database()
+
 
     @classmethod
     def tearDownClass(cls):
         drop_tables()
+        destroy_database()
 
 
-products_generated = []
-purchases_generated = []
+products_generated = list()
+purchases_generated = list()
 
 
 def load_database():
-    db_params = dotenv_values(ENV_TEST_DIR)
-    models.remote_db.init(
-        db_params.get('DATABASE_NAME'),
-        user=db_params.get('DATABASE_USERNAME'),
-        password=db_params.get('DATABASE_PASSWORD'),
-        host=db_params.get('DATABASE_HOST'),
-        port=int(db_params.get('DATABASE_PORT'))
-    )
+    models.remote_db.initialize(TestingConfig.DATABASE)
+
+
+def recreate_database():
+    drop_tables()
+    clean_data()
+    create_tables()
+    seed_database()
 
 
 def create_tables():
-    with models.remote_db as db:
-        db.create_tables([models.Product, models.Purchase])
+    models.remote_db.create_tables([models.Product, models.Purchase])
 
 
 def drop_tables():
-    with models.remote_db as db:
-        db.drop_tables([models.Product, models.Purchase])
+    models.remote_db.drop_tables([models.Product, models.Purchase])
+
+
+def clean_data():
+    products_generated.clear()
+    purchases_generated.clear()
 
 
 def seed_database(num_registers=10):
@@ -62,6 +64,10 @@ def seed_database(num_registers=10):
     # endregion
 
 
+def destroy_database():
+    models.remote_db.close()
+
+
 def generate_random_product():
     fake = Faker()
     seed(0)
@@ -75,5 +81,4 @@ def generate_random_product():
 
 def generate_random_purchase(product):
     seed(1)
-    return models.Purchase(product=product, quantity=randint(0, 10))
-# endregion
+    return models.Purchase(product=product, quantity=randint(0, 10), purchase_price=product.price)

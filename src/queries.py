@@ -1,3 +1,4 @@
+import logging
 from peewee import IntegrityError, DoesNotExist
 from playhouse.shortcuts import model_to_dict
 import src.models as models
@@ -18,13 +19,14 @@ def create_product(dto_product):
     except IntegrityError:
         product = get_product_by_barcode(dto_product['barcode'])[1]
         return CONFLICT, product
-    except:
+    except Exception as ex:
+        logging.exception(ex)
         return SERVER_ERROR, None
 
 
 def update_product_quantity(barcode, quantity):
     code, product = get_product_by_barcode(barcode)
-    if code is OK :
+    if code is OK:
         product.quantity = product.quantity + int(quantity)
         product.save()
         return OK, product
@@ -53,7 +55,8 @@ def get_product_by_barcode(barcode):
         return OK, model_to_dict(product)
     except DoesNotExist:
         return NOT_FOUND, None
-    except:
+    except Exception as ex:
+        logging.exception(ex)
         return SERVER_ERROR, None
 
 
@@ -62,9 +65,6 @@ def get_products():
         products = list()
         for product in models.Product.select().dicts():
             products.append(product)
-        if len(products) == 0:
-            return NOT_FOUND, None
-        else:
-            return OK, products
-    except:
+        return OK, products
+    except Exception:
         return SERVER_ERROR, None

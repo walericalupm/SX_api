@@ -1,7 +1,8 @@
 import datetime
-from peewee import Model, CharField, ForeignKeyField, IntegerField, FloatField, DateTimeField, MySQLDatabase
+from peewee import Model, CharField, ForeignKeyField, IntegerField, FloatField, DateTimeField, MySQLDatabase, \
+    DatabaseProxy
 
-remote_db = MySQLDatabase(None)
+remote_db = DatabaseProxy()
 
 
 class BaseModel(Model):
