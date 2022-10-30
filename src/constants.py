@@ -1,3 +1,11 @@
+import os
+
+# ROOT Project Path
+CURRENT_DIR = 'src'
+ROOT_DIR = os.path.dirname(os.path.abspath(__file__)).replace(CURRENT_DIR, '')
+ENV_TEST_DIR = os.path.join(ROOT_DIR, '.env.test')
+
+
 # API
 V1 = '/v1'
 BASE_URI_V1 = '/api' + V1
@@ -22,3 +30,9 @@ POST = 'POST'
 PUT = 'PUT'
 DELETE = 'DELETE'
 
+# Messages
+NOT_FOUND_MESSAGE = 'Resource Not Found'
+SERVER_ERROR_MESSAGE = 'Server Error'
+
+# Various
+MESSAGE = 'message'

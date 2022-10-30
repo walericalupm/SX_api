@@ -1,29 +1,27 @@
-from peewee import MySQLDatabase
 from flask import Flask
-
-DATABASE_NAME = 'fPFDbFxX0z'
-DATABASE_USERNAME = 'fPFDbFxX0z'
-DATABASE_PASSWORD = 'VCuV9ETNiF'
-DATABASE_PORT = 3306
-DATABASE_HOST = 'remotemysql.com'
-
-db = MySQLDatabase(
-    DATABASE_NAME,
-    user=DATABASE_USERNAME,
-    password=DATABASE_PASSWORD,
-    host=DATABASE_HOST,
-    port=DATABASE_PORT
-)
+import src.models as models
+from dotenv import dotenv_values
 
 app = Flask(__name__)
 
 
+def create_tables():
+    with models.remote_db as db:
+        db.create_tables([models.Product, models.Purchase])
+
+
+def load_database(database):
+    models.remote_db.initialize(database)
+    create_tables()
+
+
 @app.before_request
 def before_request():
-    db.connect()
+    if models.remote_db.is_closed():
+        models.remote_db.connect()
 
 
 @app.after_request
 def after_request(response):
-    db.close()
+    models.remote_db.close()
     return response

@@ -1,3 +1,4 @@
+import json
 from flask import jsonify
 from src.app import app
 from src.constants import *
@@ -8,11 +9,7 @@ def base_response_body(resource_id, resource_uri):
         ID: resource_id,
         HREF: resource_uri + '/' + resource_id
     }
-    return response_body
-
-
-def resource_response_object(resource):
-    return
+    return json.dumps(response_body)
 
 
 def base_response_object(response_body, code):
@@ -38,10 +35,9 @@ def api_resource_response(resource):
 
 
 def api_error_response(code):
-    if code is SERVER_ERROR:
-        message = 'Server Error'
     if code is NOT_FOUND:
         message = 'Resource Not Found'
-
+    else:
+        message = 'Server Error'
     response_body = {"message": message}
     return base_response_object(response_body, code)

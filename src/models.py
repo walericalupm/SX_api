@@ -1,12 +1,13 @@
 import datetime
+from peewee import Model, CharField, ForeignKeyField, IntegerField, FloatField, DateTimeField, MySQLDatabase, \
+    DatabaseProxy
 
-from peewee import Model, CharField, ForeignKeyField, IntegerField, FloatField, DateTimeField
-from src.app import db
+remote_db = DatabaseProxy()
 
 
 class BaseModel(Model):
     class Meta:
-        database = db
+        database = remote_db
 
 
 class Product(BaseModel):
@@ -22,4 +23,5 @@ class Product(BaseModel):
 class Purchase(BaseModel):
     product = ForeignKeyField(Product, backref='purchase')
     quantity = IntegerField()
+    purchase_price = FloatField()
     date = DateTimeField(default=datetime.datetime.now)
