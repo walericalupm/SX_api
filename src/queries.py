@@ -2,6 +2,7 @@ import logging
 from peewee import IntegrityError, DoesNotExist
 from playhouse.shortcuts import model_to_dict
 import src.models as models
+import src.dto as dto
 from src.constants import *
 
 
@@ -68,3 +69,21 @@ def get_products():
         return OK, products
     except Exception:
         return SERVER_ERROR, None
+
+
+def create_purchase(dto_purchase):
+    try:
+        purchase_dto_model = dto.PurchaseDto(**dto_purchase)
+        purchase = models.Purchase(**dto_purchase)
+        code, product_dict = get_product_by_barcode(purchase_dto_model.product_barcode)
+        if code is OK:
+            purchase.product = models.Product(**product_dict)
+            purchase.save()
+            return CREATED, model_to_dict(purchase)
+        if code is NOT_FOUND:
+            return UNPROCESSABLE_ENTITY, PRODUCT_BARCODE_NOT_EXIST
+    except Exception as ex:
+        logging.exception(ex)
+        return SERVER_ERROR, None
+
+

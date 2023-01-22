@@ -1,6 +1,6 @@
 from faker import Faker
 from peewee import IntegrityError, DoesNotExist
-from tests.base_test_setup import BaseTestCase, generate_random_product, products_generated
+from tests.base_setup import BaseTestCase, generate_random_product, products_generated
 import src.models as models
 
 

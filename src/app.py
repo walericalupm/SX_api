@@ -1,6 +1,5 @@
 from flask import Flask
 import src.models as models
-from dotenv import dotenv_values
 
 app = Flask(__name__)
 

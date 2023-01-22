@@ -12,11 +12,12 @@ def base_response_object(response_body, code):
     return response
 
 
-def api_error_response(code):
-    if code is NOT_FOUND:
-        message = NOT_FOUND_MESSAGE
-    else:
-        message = SERVER_ERROR_MESSAGE
+def api_error_response(code, message=None):
+    if message is None:
+        if code is NOT_FOUND:
+            message = NOT_FOUND_MESSAGE
+        else:
+            message = SERVER_ERROR_MESSAGE
     response_body = json.dumps({MESSAGE: message})
     return base_response_object(response_body, code)
 
