@@ -1,5 +1,5 @@
 from dotenv import dotenv_values
-from peewee import DatabaseProxy, MySQLDatabase, SqliteDatabase
+from peewee import DatabaseProxy, MySQLDatabase, SqliteDatabase, PostgresqlDatabase
 
 
 class Config(object):
@@ -16,6 +16,19 @@ class ProductionConfig(Config):
     def DATABASE(self):
         db_params = dotenv_values()
         return MySQLDatabase(
+            db_params.get('DATABASE_NAME'),
+            user=db_params.get('DATABASE_USERNAME'),
+            password=db_params.get('DATABASE_PASSWORD'),
+            host=db_params.get('DATABASE_HOST'),
+            port=int(db_params.get('DATABASE_PORT'))
+        )
+
+
+class CloudConfig(Config):
+    @property
+    def DATABASE(self):
+        db_params = dotenv_values('.cloud.env')
+        return PostgresqlDatabase(
             db_params.get('DATABASE_NAME'),
             user=db_params.get('DATABASE_USERNAME'),
             password=db_params.get('DATABASE_PASSWORD'),
