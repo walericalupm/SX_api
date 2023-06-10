@@ -17,4 +17,6 @@ if __name__ == '__main__':
     # logging.basicConfig(filename=configuration.LOG_FILE)
 
     app.config.from_object(configuration)
-    app.run()
+    app.run(port=int(os.environ.get(PORT, DEFAULT_APP_PORT)),
+            debug=False,
+            host=DEFAULT_APP_HOST)

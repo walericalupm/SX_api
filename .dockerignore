@@ -1,0 +1,5 @@
+*.log
+*.db
+.aws_intructions.md
+venv
+doc

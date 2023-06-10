@@ -38,3 +38,6 @@ PRODUCT_BARCODE_NOT_EXIST = 'Product barcode not exist'
 
 # Various
 MESSAGE = 'message'
+DEFAULT_APP_PORT = 80
+DEFAULT_APP_HOST = '0.0.0.0'
+PORT = 'PORT'

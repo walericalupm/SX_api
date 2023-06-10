@@ -1,0 +1,38 @@
+language: python
+python:
+  3.9.1
+sudo: required
+
+branches:
+  only:
+    - develop
+    - "/^v[0-999].[0-999]$/"
+    - "/^v[0-999].[0-999].[0-999]$/"
+    - master
+
+services:
+  - docker
+
+before_install:
+  # Installing heroku CLI
+  - curl https://cli-assets.heroku.com/install.sh | sh
+  #Login in heroku
+  - echo "$HEROKU_PASSWORD" | docker login -u "$HEROKU_USERNAME" --password-stdin registry.heroku.com
+
+install:
+  - docker build -t walerical/sx_api .
+  - docker run -d -p 80:80 --rm --name sx-api walerical/sx_api
+
+script:
+  # Test API
+  - docker exec -it recoart-api python -m unittest /usr/api/recoart_api/tests/integration/database/recoart_db_it.py
+  - docker exec -it recoart-api python -m unittest /usr/api/recoart_api/tests/integration/api/recoart_api_it.py
+  # Tag docker build to push to heroku
+  - docker tag walericalupm/recoart-api registry.heroku.com/$HEROKU_APP_NAME/web
+deploy:
+  provider: script
+  script:
+    docker push registry.heroku.com/$HEROKU_APP_NAME/web;
+    heroku container:release web --app $HEROKU_APP_NAME
+  on:
+    branch: master
